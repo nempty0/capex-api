@@ -16,31 +16,64 @@ class Capex extends RestController
         parent::__construct();
         $this->load->model('capexmodel');
     }
-    public function capex_get() //1.	Show Capex All   //แสดงข้อมูล capex ทั้งหมด
-    {      
-        $result = $this->capexmodel->getCapex();
+    public function capex_get() 
+    {
+        $capexID = $this->get('capexID');
+        $division = $this->get('division');
+        $capexStatusID = $this->get('capexStatusID');
+        $status = $this->get('status');
+
+        if($status == "all"){   //1.	Show Capex All   //แสดงข้อมูล capex ทั้งหมด
+            $result = $this->capexmodel->getCapex();
+        }
+        
+        if($status == "one"){   //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
+            $arr = array(
+            "capexID" => $capexID,   
+            );
+            $result = $this->capexmodel->getCapexWhere($arr);        
+        }
+        
+        if($status == "division"){  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
+            $arr = array(
+            "division" => $division,   
+            );
+            $result = $this->capexmodel->getCapexWhere($arr);         
+        } 
+
+        if($status == "approval"){
+            $arr = array(
+                "capexStatusID" => $capexStatusID
+            );
+            $result = $this->capexmodel->getCapexWhere($arr);
+        }
+        $this->response($result,200);  
     //    $result = array(
     //        "status" => "success"
     //    );
-        $this->response($result,200);
+       
 
         // foreach ($capex->result() as $row){
         //     echo $row->capexName."<br>";
         // }
         
     }
-    public function capexID_get($capexID) //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
-    {      
-        $result = $this->CapexModel->getCapex();
-        $this->response($result,200);
+    // public function capexID_get() //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
+    // {      
+    //     $capexID = $this->get('capexID');
+    //     $arr = array(
+    //         "capexID" => $capexID,   
+    //     );
+    //     $result = $this->capexmodel->getCapexOne($arr);
+    //     $this->response($result,200);
         
-    }
-    public function capexDivision_get($division) //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
-    {      
-        $result = $this->CapexModel->getCapex();
-        $this->response($result,200);
+    // }
+    // public function capexDivision_get($division) //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
+    // {      
+    //     $result = $this->CapexModel->getCapex();
+    //     $this->response($result,200);
         
-    }
+    // }
     public function capex_put(     //4.	edit Capex // แก้ไข capex
         $capexID,
         $capexName,
@@ -93,7 +126,8 @@ class Capex extends RestController
             $h2Plan,
             $goal,
             $mainComponents,
-            $expectation
+            $expectation,
+            $statusID
         ) 
         {
             $arr = array(
@@ -107,8 +141,29 @@ class Capex extends RestController
                 "h2Plan"            => $h2Plan,
                 "goal"              => $goal,
                 "mainComponents"    => $mainComponents,
-                "expectation"       => $expectation
+                "expectation"       => $expectation,
+                "statusID"          => $statusID
             );
-            $this->CapexModel->insertCapex($arr);
+            $this->capexmodel->insertCapex($arr);
+            $this->response($arr,200);
         }    
 }
+
+
+/*
+{
+    "capexName": "Test3",
+    "classificationID": 789, 
+    "priorityID": 1,
+    "division": "IT",   
+    "capexYear":"300000",     
+    "totalPlan": 500000 , 
+    "h1Plan": 150000,     
+   "h2Plan": 150000,
+    "goal": "goal",
+    "mainComponents": "main",
+    "expectation": "exp",
+	"capexStatusID": 2
+
+}
+*/

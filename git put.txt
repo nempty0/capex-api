@@ -1,0 +1,5 @@
+git add .
+git commit -m"some word"
+git branch -M main
+git remote add origin https://github.com/nempty0/capex-api.git
+git push -u origin main

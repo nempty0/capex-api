@@ -9,6 +9,12 @@ class CapexModel extends CI_Controller
         $result = $query->result();
         return $result;
     }
+    public function getCapexWhere($arr)
+    {
+        $query = $this->db->select("*")->from("capex")->where($arr)->get();
+        $result = $query->result();
+        return $result;
+    }
 
     public function getCapex1()
     {

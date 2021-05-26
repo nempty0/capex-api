@@ -5,7 +5,15 @@ class ApprovalModel extends CI_Controller
 {
     public function getApproval()
     {
-       return $this->db->get('Approval');
+        $query = $this->db->select("*")->from("Approval")->get();
+        $result = $query->result();
+        return $result;
+    }
+    public function getApprovalWhere($arr)
+    {
+        $query = $this->db->select("*")->from("Approval")->where($arr)->get();
+        $result = $query->result();
+        return $result;
     }
 
     // public function getCapex1()
@@ -17,7 +25,7 @@ class ApprovalModel extends CI_Controller
     
     public function insertApproval($arr)
     {
-        $this->db->insert('Approval',$arr)
+        $this->db->insert('Approval',$arr);
     }
     public function updateApproval($arr,$where)
     {
