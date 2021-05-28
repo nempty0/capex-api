@@ -26,11 +26,13 @@ class CapexModel extends CI_Controller
     public function insertCapex($arr)
     {
         $this->db->insert('capex',$arr);
+        return $this->db->insert_id();
     }
     public function updateCapex($arr,$where)
     {
+        $this->db->set($arr);
         $this->db->where($where);
-        $this->db->update('capex',$arr)->where($where);
+        $this->db->update('capex');
     }
     // public function deleteCapex($where)
     // {
