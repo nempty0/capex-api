@@ -27,25 +27,31 @@ class Capex extends RestController
             $result = $this->capexmodel->getCapex();
         }
         
-        if($status == "one"){   //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
+        else if($status == "one"){   //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
             $arr = array(
             "capexID" => $capexID,   
             );
             $result = $this->capexmodel->getCapexWhere($arr);        
         }
         
-        if($status == "division"){  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
+        else if($status == "division"){  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
             $arr = array(
             "division" => $division,   
             );
             $result = $this->capexmodel->getCapexWhere($arr);         
         } 
 
-        if($status == "approval"){
+        else if($status == "approval"){    //5.	show Capex Approv  // แสดงข้อมูล capex ที่ approv แล้ว
             $arr = array(
                 "capexStatusID" => $capexStatusID
             );
             $result = $this->capexmodel->getCapexWhere($arr);
+        }
+        else{   // status ไม่ตรงกับเงื่อนไข
+            $result = array(
+               "Status" => "This status is not available"
+            );
+            
         }
         $this->response($result,200);  
       
