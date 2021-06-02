@@ -33,8 +33,7 @@ class Approval extends RestController
         else{   // status ไม่ตรงกับเงื่อนไข
             $result = array(
                "Status" => "This status is not available"
-            );
-            
+            );   
         }
         
         $this->response($result,200);
