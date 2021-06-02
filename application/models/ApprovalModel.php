@@ -11,7 +11,11 @@ class ApprovalModel extends CI_Controller
     }
     public function getApprovalSelect($arr)
     {
-        $query = $this->db->select("*")->from("Approval")->where($arr)->get();
+        $query = $this->db->select("*")
+                        ->from("Approval")
+                        ->join("ApprovalPosition","Approval.positionID = ApprovalPosition.positionID")
+                        ->where($arr)
+                        ->get();
         $result = $query->result();
         return $result;
     } 
