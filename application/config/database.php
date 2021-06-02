@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'DESKTOP-QNGG5QM',
+	'hostname' => 'SCIHIT1817\SQLEXPRESS',
 	'port' => '1433',
 	'username' => 'sa',
-	'password' => 'ZAx1234.',
+	'password' => 'Klong%bb0',
 	'database' => 'Capex',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',
