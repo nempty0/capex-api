@@ -9,20 +9,13 @@ class CapexModel extends CI_Controller
         $result = $query->result();
         return $result;
     }
-    public function getCapexWhere($arr)
+    public function getCapexSelect($arr)
     {
         $query = $this->db->select("*")->from("capex")->where($arr)->get();
         $result = $query->result();
         return $result;
     }
-
-    public function getCapex1()
-    {
-        $query = $this->db->select("capexID,capexName")->from("capex")->get();
-        $result = $query->result();
-        return $result;
-    }
-    
+ 
     public function insertCapex($arr)
     {
         $this->db->insert('capex',$arr);
@@ -34,9 +27,16 @@ class CapexModel extends CI_Controller
         $this->db->where($where);
         $this->db->update('capex');
     }
-    // public function deleteCapex($where)
-    // {
-    //     $this->db->delete('capex',$where);
-    // }
+    public function deleteCapex($where)
+    {
+        $this->db->where($where);
+        $this->db->delete('capex');
+    }
 
 }
+ // public function getCapex1()
+    // {
+    //     $query = $this->db->select("capexID,capexName")->from("capex")->get();
+    //     $result = $query->result();
+    //     return $result;
+    // }

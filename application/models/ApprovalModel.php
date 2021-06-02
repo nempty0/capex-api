@@ -9,32 +9,34 @@ class ApprovalModel extends CI_Controller
         $result = $query->result();
         return $result;
     }
-    public function getApprovalWhere($arr)
+    public function getApprovalSelect($arr)
     {
         $query = $this->db->select("*")->from("Approval")->where($arr)->get();
         $result = $query->result();
         return $result;
+    } 
+    public function insertApproval($arr)
+    {
+        $this->db->insert('Approval',$arr);
+        return $this->db->insert_id();
+    }
+    public function updateApproval($arr,$where)
+    {
+        $this->db->set($arr);
+        $this->db->where($where);
+        $this->db->update('Approval');
+    }
+    public function deleteApproval($where)
+    {
+        $this->db->where($where);
+        $this->db->delete('capex');
     }
 
-    // public function getCapex1()
+}
+
+// public function getCapex1()
     // {
     //     $query = $this->db->select("capexID,capexName")->from("capex")->get();
     //     $result = $query->result();
     //     return $result;
     // }
-    
-    public function insertApproval($arr)
-    {
-        $this->db->insert('Approval',$arr);
-    }
-    public function updateApproval($arr,$where)
-    {
-        $this->db->where($where);
-        $this->db->update('Approval',$arr)->where($where);
-    }
-    // public function deleteCapex($where)
-    // {
-    //     $this->db->delete('capex',$where);
-    // }
-
-}

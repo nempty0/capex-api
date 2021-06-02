@@ -31,21 +31,21 @@ class Capex extends RestController
             $arr = array(
             "capexID" => $capexID,   
             );
-            $result = $this->capexmodel->getCapexWhere($arr);        
+            $result = $this->capexmodel->getCapexSelect($arr);        
         }
         
         else if($status == "division"){  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
             $arr = array(
             "division" => $division,   
             );
-            $result = $this->capexmodel->getCapexWhere($arr);         
+            $result = $this->capexmodel->getCapexSelect($arr);         
         } 
 
         else if($status == "approval"){    //5.	show Capex Approv  // แสดงข้อมูล capex ที่ approv แล้ว
             $arr = array(
                 "capexStatusID" => $capexStatusID
             );
-            $result = $this->capexmodel->getCapexWhere($arr);
+            $result = $this->capexmodel->getCapexSelect($arr);
         }
         else{   // status ไม่ตรงกับเงื่อนไข
             $result = array(
