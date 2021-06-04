@@ -1,11 +1,11 @@
 <?php
-defined('BASEPATH') OR exit('No direct script acess allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Headers: origin, content-type, accept');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT');
-require(APPPATH.'libraries/RestController.php');
-require(APPPATH.'libraries/Format.php');
+require(APPPATH . 'libraries/RestController.php');
+require(APPPATH . 'libraries/Format.php');
 
 use chriskacerguis\RestServer\RestController;
 
@@ -20,6 +20,7 @@ class Approval extends RestController
     {
         $status = $this->get('status');
         $approvalID = $this->get('approvalID');
+        $division = $this->get("division");
 
         if($status == "all"){       //7.	show Approval All // แสดงข้อมูล Approval ทั้งหมด
             $result = $this->approvalmodel->getApproval();
@@ -29,6 +30,9 @@ class Approval extends RestController
                 "approvalID" => $approvalID
             );
             $result = $this->approvalmodel->getApprovalSelect($arr);
+        }else if($status == "division"){
+            $where = "division = '$division'";
+            $result = $this->approvalmodel->getApprovalSelect($where);
         }
         else{   // status ไม่ตรงกับเงื่อนไข
             $result = array(
@@ -40,8 +44,8 @@ class Approval extends RestController
     }
     public function approval_put( )  //	edit approval // แก้ไข capex
     {
-        $approvalID     = $this->put('$approval');
-        $approval       = $this->put('$approval');
+        $approvalID     = $this->put('approvalID');
+        $approval       = $this->put('approval');
 	    $division       = $this->put('division');
 	    $positionID     = $this->put('positionID');
 

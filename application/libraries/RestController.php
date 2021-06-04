@@ -11,7 +11,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * CodeIgniter Rest Controller
  * A fully RESTful server implementation for CodeIgniter using one library, one config file and one controller.
  *
- * @link            https://github.com/chriskacerguis/codeigniter-restserver
+ * @link            https://github.com/chriskacerguis/ci-restserver
  *
  * @version         4.0.0
  */
@@ -33,7 +33,7 @@ class RestController extends \CI_Controller
     protected $methods = [];
 
     /**
-     * Defines https status.
+     * Defines https status
      */
     protected $http_status = [];
 
@@ -223,7 +223,6 @@ class RestController extends \CI_Controller
     const HTTP_UNAUTHORIZED = 401;
     const HTTP_FORBIDDEN = 403;
     const HTTP_NOT_FOUND = 404;
-    const HTTP_METHOD_NOT_ALLOWED = 405;
     const HTTP_NOT_ACCEPTABLE = 406;
     const HTTP_INTERNAL_ERROR = 500;
 
@@ -263,14 +262,14 @@ class RestController extends \CI_Controller
         // when output is displayed for not damaging data accidentally
         $this->output->parse_exec_vars = false;
 
-        // Load the rest.php configuration file
-        $this->get_local_config($config);
-
         // Log the loading time to the log table
         if ($this->config->item('rest_enable_logging') === true) {
             // Start the timer for how long the request takes
             $this->_start_rtime = microtime(true);
         }
+
+        // Load the rest.php configuration file
+        $this->get_local_config($config);
 
         // Determine supported output formats from configuration
         $supported_formats = $this->config->item('rest_supported_formats');
@@ -448,10 +447,10 @@ class RestController extends \CI_Controller
      */
     private function get_local_config($config_file)
     {
-        if (file_exists(APPPATH.'config/'.$config_file.'.php')) {
+        if ( file_exists(APPPATH . 'config/' . $config_file . '.php') ) {
             $this->load->config($config_file, false);
         } else {
-            if (file_exists(__DIR__.'/'.$config_file.'.php')) {
+            if ( file_exists(__DIR__.'/'.$config_file.'.php') ) {
                 $config = [];
                 include __DIR__.'/'.$config_file.'.php';
                 foreach ($config as $key => $value) {
@@ -549,7 +548,7 @@ class RestController extends \CI_Controller
             $this->response([
                 $this->config->item('rest_status_field_name')  => false,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_unknown_method'),
-            ], self::HTTP_METHOD_NOT_ALLOWED);
+            ], $this->http_status['METHOD_NOT_ALLOWED']);
         }
 
         // Doing key related stuff? Can only do it if they have a key right?
@@ -951,17 +950,15 @@ class RestController extends \CI_Controller
         // Insert the request into the log table
         $is_inserted = $this->rest->db
             ->insert(
-                $this->config->item('rest_logs_table'),
-                [
-                    'uri'        => $this->uri->uri_string(),
-                    'method'     => $this->request->method,
-                    'params'     => $this->_args ? ($this->config->item('rest_logs_json_params') === true ? json_encode($this->_args) : serialize($this->_args)) : null,
-                    'api_key'    => isset($this->rest->key) ? $this->rest->key : '',
-                    'ip_address' => $this->input->ip_address(),
-                    'time'       => time(),
-                    'authorized' => $authorized,
-                ]
-            );
+                $this->config->item('rest_logs_table'), [
+                'uri'        => $this->uri->uri_string(),
+                'method'     => $this->request->method,
+                'params'     => $this->_args ? ($this->config->item('rest_logs_json_params') === true ? json_encode($this->_args) : serialize($this->_args)) : null,
+                'api_key'    => isset($this->rest->key) ? $this->rest->key : '',
+                'ip_address' => $this->input->ip_address(),
+                'time'       => time(),
+                'authorized' => $authorized,
+            ]);
 
         // Get the last insert id to update at a later stage of the request
         $this->_insert_id = $this->rest->db->insert_id();
@@ -1411,10 +1408,6 @@ class RestController extends \CI_Controller
     public function post($key = null, $xss_clean = null)
     {
         if ($key === null) {
-            foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_post_args), RecursiveIteratorIterator::CATCH_GET_CHILD) as $key => $value) {
-                $this->_post_args[$key] = $this->_xss_clean($this->_post_args[$key], $xss_clean);
-            }
-
             return $this->_post_args;
         }
 
@@ -1552,7 +1545,7 @@ class RestController extends \CI_Controller
             'basedn'  => $this->config->item('basedn', 'ldap'),
         ];
 
-        log_message('debug', 'LDAP Auth: Connect to '.(isset($ldap['host']) ? $ldap['host'] : '[ldap not configured]'));
+        log_message('debug', 'LDAP Auth: Connect to '.(isset($ldaphost) ? $ldaphost : '[ldap not configured]'));
 
         // Connect to the ldap server
         $ldapconn = ldap_connect($ldap['host'], $ldap['port']);
@@ -1716,7 +1709,7 @@ class RestController extends \CI_Controller
         if ($this->config->item('rest_ip_whitelist_enabled')) {
             $this->_check_whitelist_auth();
         }
-
+        
         // Load library session of CodeIgniter
         $this->load->library('session');
 
@@ -1729,7 +1722,7 @@ class RestController extends \CI_Controller
             $this->response([
                 $this->config->item('rest_status_field_name')  => false,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_unauthorized'),
-            ], self::HTTP_UNAUTHORIZED);
+            ], $this->http_status['UNAUTHORIZED']);
         }
     }
 
@@ -1814,7 +1807,7 @@ class RestController extends \CI_Controller
             $this->response([
                 $this->config->item('rest_status_field_name')  => false,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_invalid_credentials'),
-            ], self::HTTP_UNAUTHORIZED);
+            ], $this->http_status['UNAUTHORIZED']);
         }
     }
 
@@ -1834,7 +1827,7 @@ class RestController extends \CI_Controller
             $this->response([
                 $this->config->item('rest_status_field_name')  => false,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_ip_denied'),
-            ], self::HTTP_UNAUTHORIZED);
+            ], $this->http_status['UNAUTHORIZED']);
         }
     }
 
@@ -1859,7 +1852,7 @@ class RestController extends \CI_Controller
             $this->response([
                 $this->config->item('rest_status_field_name')  => false,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_ip_unauthorized'),
-            ], self::HTTP_UNAUTHORIZED);
+            ], $this->http_status['UNAUTHORIZED']);
         }
     }
 
@@ -1883,8 +1876,7 @@ class RestController extends \CI_Controller
             header(
                 'WWW-Authenticate: Digest realm="'.$rest_realm
                 .'", qop="auth", nonce="'.$nonce
-                .'", opaque="'.md5($rest_realm).'"'
-            );
+                .'", opaque="'.md5($rest_realm).'"');
         }
 
         if ($this->config->item('strict_api_and_auth') === true) {
@@ -1895,7 +1887,7 @@ class RestController extends \CI_Controller
         $this->response([
             $this->config->item('rest_status_field_name')  => false,
             $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_unauthorized'),
-        ], self::HTTP_UNAUTHORIZED);
+        ], $this->http_status['UNAUTHORIZED']);
     }
 
     /**
@@ -1914,12 +1906,9 @@ class RestController extends \CI_Controller
         $payload['rtime'] = $this->_end_rtime - $this->_start_rtime;
 
         return $this->rest->db->update(
-            $this->config->item('rest_logs_table'),
-            $payload,
-            [
-                'id' => $this->_insert_id,
-            ]
-        );
+            $this->config->item('rest_logs_table'), $payload, [
+            'id' => $this->_insert_id,
+        ]);
     }
 
     /**
@@ -1940,12 +1929,9 @@ class RestController extends \CI_Controller
         $payload['response_code'] = $http_code;
 
         return $this->rest->db->update(
-            $this->config->item('rest_logs_table'),
-            $payload,
-            [
-                'id' => $this->_insert_id,
-            ]
-        );
+            $this->config->item('rest_logs_table'), $payload, [
+            'id' => $this->_insert_id,
+        ]);
     }
 
     /**
@@ -1962,12 +1948,10 @@ class RestController extends \CI_Controller
 
         // Fetch controller based on path and controller name
         $controller = implode(
-            '/',
-            [
-                $this->router->directory,
-                $this->router->class,
-            ]
-        );
+            '/', [
+            $this->router->directory,
+            $this->router->class,
+        ]);
 
         // Remove any double slashes for safety
         $controller = str_replace('//', '/', $controller);

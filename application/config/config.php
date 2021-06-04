@@ -23,7 +23,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '';
+$potocal = 'http'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '');
+
+
+$directory = '/Request/service/flow';
+
+
+$base_url = $potocal . '://'.$_SERVER['HTTP_HOST'] . $directory;
+
+
+
+$config['base_url'] = $base_url;
 
 /*
 |--------------------------------------------------------------------------
