@@ -20,6 +20,7 @@ class Approval extends RestController
     {
         $status = $this->get('status');
         $approvalID = $this->get('approvalID');
+        $division = $this->get("division");
 
         if($status == "all"){       //7.	show Approval All // แสดงข้อมูล Approval ทั้งหมด
             $result = $this->approvalmodel->getApproval();
@@ -29,6 +30,10 @@ class Approval extends RestController
                 "approvalID" => $approvalID
             );
             $result = $this->approvalmodel->getApprovalSelect($arr);
+        }
+        else if($status == "division"){
+            $where = "division = '$division'";
+            $result = $this->approvalmodel->getApprovalSelect($where);
         }
         else{   // status ไม่ตรงกับเงื่อนไข
             $result = array(
@@ -40,7 +45,7 @@ class Approval extends RestController
     }
     public function approval_put( )  //	edit approval // แก้ไข capex
     {
-        $approvalID     = $this->put('$approval');
+        $approvalID     = $this->put('$approvalID');
         $approval       = $this->put('$approval');
 	    $division       = $this->put('division');
 	    $positionID     = $this->put('positionID');

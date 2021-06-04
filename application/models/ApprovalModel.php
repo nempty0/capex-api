@@ -11,7 +11,11 @@ class ApprovalModel extends CI_Controller
     }
     public function getApprovalSelect($arr)
     {
-        $query = $this->db->select("*")->from("Approval")->where($arr)->get();
+        $query = $this->db->select("*")
+                        ->from("Approval")
+                        ->join("ApprovalPosition","Approval.positionID = ApprovalPosition.positionID")
+                        ->where($arr)
+                        ->get();
         $result = $query->result();
         return $result;
     } 
@@ -29,14 +33,6 @@ class ApprovalModel extends CI_Controller
     public function deleteApproval($where)
     {
         $this->db->where($where);
-        $this->db->delete('capex');
+        $this->db->delete('Approval');
     }
-
 }
-
-// public function getCapex1()
-    // {
-    //     $query = $this->db->select("capexID,capexName")->from("capex")->get();
-    //     $result = $query->result();
-    //     return $result;
-    // }
