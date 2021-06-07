@@ -16,140 +16,135 @@ class Capex extends RestController
         parent::__construct();
         $this->load->model('capexmodel');
     }
-    public function capex_get() 
+    public function capex_get()
     {
         $capexID = $this->get('capexID');
         $division = $this->get('division');
         $capexStatusID = $this->get('capexStatusID');
         $status = $this->get('status');
+        $flowID = $this->get('flowID');
 
-        if($status == "all"){   //1.	Show Capex All   //แสดงข้อมูล capex ทั้งหมด
+        if ($status == "all") {   //1.	Show Capex All   //แสดงข้อมูล capex ทั้งหมด
             $result = $this->capexmodel->getCapex();
-        }
-        
-        else if($status == "one"){   //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
+        } else if ($status == "one") {   //2.	Show Capex One // แสดงข้อมูล capex เฉพาะ
             $arr = array(
-            "capexID" => $capexID,   
+                "capexID" => $capexID,
             );
-            $result = $this->capexmodel->getCapexSelect($arr);        
-        }
-        
-        else if($status == "division"){  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
+            $result = $this->capexmodel->getCapexSelect($arr);
+        } else if ($status == "division") {  //9.	show Capex for each Division  // แสดงข้อมูล Capex เฉพาะแผนก
             $arr = array(
-            "division" => $division,   
+                "division" => $division,
             );
-            $result = $this->capexmodel->getCapexSelect($arr);         
-        } 
-
-        else if($status == "approval"){    //5.	show Capex Approv  // แสดงข้อมูล capex ที่ approv แล้ว
+            $result = $this->capexmodel->getCapexSelect($arr);
+        } else if ($status == "approval") {    //5.	show Capex Approv  // แสดงข้อมูล capex ที่ approv แล้ว
             $arr = array(
                 "capexStatusID" => $capexStatusID
             );
             $result = $this->capexmodel->getCapexSelect($arr);
-        }
-        else{   // status ไม่ตรงกับเงื่อนไข
-            $result = array(
-               "Status" => "This status is not available"
+        } else if ($status == "flow") {
+            $arr = array(
+                "capexFlow.flowID" => $flowID
             );
-            
+            $result = $this->capexmodel->getCapexApproval($arr);
+        } else {   // status ไม่ตรงกับเงื่อนไข
+            $result = array(
+                "Status" => "This status is not available"
+            );
         }
-        $this->response($result,200);  
-      
+        $this->response($result, 200);
     }
-    
+
     public function capex_put()    //4.	edit Capex // แก้ไข capex   
     {
         $capexID            = $this->put('capexID');
         $capexNo            = $this->put('capexNo');
         $capexName          = $this->put('capexName');
-        $classificationID   = $this->put('classificationID'); 
+        $classificationID   = $this->put('classificationID');
         $priorityID         = $this->put('priorityID');
-        $division           = $this->put('division');     
-        $capexYear          = $this->put('capexYear');     
-        $totalPlan          = $this->put('totalPlan'); 
-        $h1Plan             = $this->put('h1Plan');    
+        $division           = $this->put('division');
+        $capexYear          = $this->put('capexYear');
+        $totalPlan          = $this->put('totalPlan');
+        $h1Plan             = $this->put('h1Plan');
         $h2Plan             = $this->put('h2Plan');
         $goal               = $this->put('goal');
         $mainComponents     = $this->put('mainComponents');
         $expectation        = $this->put('expectation');
         $capexStatusID      = $this->put('capexStatusID');
-        
+
         $arr = array(
             "capexName"         => $capexName,
             "capexNo"           => $capexNo,
             "classificationID"  => $classificationID,
             "priorityID"        => $priorityID,
             "division"          => $division,
-            "capexYear"         => $capexYear,      
+            "capexYear"         => $capexYear,
             "totalPlan"         => $totalPlan,
-            "h1Plan"            => $h1Plan,    
+            "h1Plan"            => $h1Plan,
             "h2Plan"            => $h2Plan,
             "goal"              => $goal,
             "mainComponents"    => $mainComponents,
             "expectation"       => $expectation,
-            "capexStatusID"     => $capexStatusID  
+            "capexStatusID"     => $capexStatusID
 
         );
         $where = "capexID = $capexID";
 
-        $this->capexmodel->updateCapex($arr,$where);
+        $this->capexmodel->updateCapex($arr, $where);
         $result = array(
             "status" => "success",
             "detail" => "update capex completed"
         );
-        $this->response($result,200);
+        $this->response($result, 200);
     }
     public function capex_post()    //3.	create Capex  // สร้าง capex
     {
         $capexName          = $this->post('capexName');
-        $capexNo            = $this->post('$capexNo');
-        $classificationID   = $this->post('classificationID'); 
+        $capexNo            = $this->post('capexNo');
+        $classificationID   = $this->post('classificationID');
         $priorityID         = $this->post('priorityID');
-        $division           = $this->post('division');     
-        $capexYear          = $this->post('capexYear');     
-        $totalPlan          = $this->post('totalPlan'); 
-        $h1Plan             = $this->post('h1Plan');    
+        $division           = $this->post('division');
+        $capexYear          = $this->post('capexYear');
+        $totalPlan          = $this->post('totalPlan');
+        $h1Plan             = $this->post('h1Plan');
         $h2Plan             = $this->post('h2Plan');
         $goal               = $this->post('goal');
         $mainComponents     = $this->post('mainComponents');
         $expectation        = $this->post('expectation');
         $capexStatusID      = $this->post('capexStatusID');
-        
-        $id = 0;
-        
-        $arr = array(
-                "capexName"         => $capexName,
-                "capexNo"           => $capexNo,
-                "classificationID"  => $classificationID,
-                "priorityID"        => $priorityID,
-                "division"          => $division,
-                "capexYear"         => $capexYear,      
-                "totalPlan"         => $totalPlan,
-                "h1Plan"            => $h1Plan,    
-                "h2Plan"            => $h2Plan,
-                "goal"              => $goal,
-                "mainComponents"    => $mainComponents,
-                "expectation"       => $expectation,
-                "capexStatusID"     => $capexStatusID
-            );
-            $id = $this->capexmodel->insertCapex($arr);
-            
-            if($id != 0){
-                $result = array(
-                    "status" =>"success",
-                    "detail" =>"create capex success",
-                    "capexID"=>$id
-                );
-            }else{
-                $result = array(
-                    "status" => "error",
-                    "detail" => "can' not create capex"
-                );
-            }
-            $this->response($result,200);
 
-        
-        }    
+        $id = 0;
+
+        $arr = array(
+            "capexName"         => $capexName,
+            "capexNo"           => $capexNo,
+            "classificationID"  => $classificationID,
+            "priorityID"        => $priorityID,
+            "division"          => $division,
+            "capexYear"         => $capexYear,
+            "totalPlan"         => $totalPlan,
+            "h1Plan"            => $h1Plan,
+            "h2Plan"            => $h2Plan,
+            "goal"              => $goal,
+            "mainComponents"    => $mainComponents,
+            "expectation"       => $expectation,
+            "capexStatusID"     => $capexStatusID
+        );
+        $id = $this->capexmodel->insertCapex($arr);
+
+        if ($id != 0) {
+            $result = array(
+                "status" => "success",
+                "detail" => "create capex success",
+                "capexID" => $id
+            );
+        } else {
+            $result = array(
+                "status" => "error",
+                "detail" => "can' not create capex"
+            );
+        }
+        $this->response($result, 200);
+    }
 }
 
 
