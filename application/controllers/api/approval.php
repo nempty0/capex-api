@@ -92,5 +92,17 @@ class Approval extends RestController
         }
         $this->response($result,200);
     }
+    public function approval_delete()
+    {
+        $approvalID = $this->delete('approvalID');
+        $where = "approvalID = " . $approvalID;
+        $this->queuecapcapexmodelexmodel->deleteApproval($where);
+
+        $result = array(
+            "status" => "success",
+            "detail" => "delete Approval completed"
+        );
+        $this->response($result, 200);
+    } 
 }
 

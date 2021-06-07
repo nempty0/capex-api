@@ -149,7 +149,19 @@ class Capex extends RestController
             $this->response($result,200);
 
         
-        }    
+        }
+        public function capex_delete()
+        {
+            $capexID = $this->delete('capexID');
+            $where = "capexID = " . $capexID;
+            $this->queuecapcapexmodelexmodel->deleteCapex($where);
+    
+            $result = array(
+                "status" => "success",
+                "detail" => "delete Capex completed"
+            );
+            $this->response($result, 200);
+        } 
 }
 
 
