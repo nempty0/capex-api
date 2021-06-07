@@ -1,11 +1,11 @@
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script acess allowed');
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Credentials: true"); 
 header('Access-Control-Allow-Headers: origin, content-type, accept');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT');
-require(APPPATH . 'libraries/RestController.php');
-require(APPPATH . 'libraries/Format.php');
+require(APPPATH.'libraries/RestController.php');
+require(APPPATH.'libraries/Format.php');
 
 use chriskacerguis\RestServer\RestController;
 
@@ -30,7 +30,8 @@ class Approval extends RestController
                 "approvalID" => $approvalID
             );
             $result = $this->approvalmodel->getApprovalSelect($arr);
-        }else if($status == "division"){
+        }
+        else if($status == "division"){
             $where = "division = '$division'";
             $result = $this->approvalmodel->getApprovalSelect($where);
         }
@@ -44,8 +45,8 @@ class Approval extends RestController
     }
     public function approval_put( )  //	edit approval // แก้ไข capex
     {
-        $approvalID     = $this->put('approvalID');
-        $approval       = $this->put('approval');
+        $approvalID     = $this->put('$approvalID');
+        $approval       = $this->put('$approval');
 	    $division       = $this->put('division');
 	    $positionID     = $this->put('positionID');
 

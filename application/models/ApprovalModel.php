@@ -33,14 +33,6 @@ class ApprovalModel extends CI_Controller
     public function deleteApproval($where)
     {
         $this->db->where($where);
-        $this->db->delete('capex');
+        $this->db->delete('Approval');
     }
-
 }
-
-// public function getCapex1()
-    // {
-    //     $query = $this->db->select("capexID,capexName")->from("capex")->get();
-    //     $result = $query->result();
-    //     return $result;
-    // }
