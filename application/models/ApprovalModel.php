@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script acess allowed');
 
-class ApprovalModel extends CI_Controller 
+class ApprovalModel extends CI_model 
 {
     public function getApproval()
     {

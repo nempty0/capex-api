@@ -1,7 +1,7 @@
 <?php
-defined('BASEPATH') OR exit('No direct script acess allowed');
+defined('BASEPATH') or exit('No direct script acess allowed');
 
-class CapexModel extends CI_Controller 
+class CapexModel extends CI_model
 {
     public function getCapex()
     {
@@ -11,17 +11,38 @@ class CapexModel extends CI_Controller
     }
     public function getCapexSelect($arr)
     {
-        $query = $this->db->select("*")->from("capex")->where($arr)->get();
+        $query = $this->db->select("*")
+            ->from("capex")
+            ->join("classification", "classification.classificationID = capex.classificationID", "inner")
+            ->join("priority", "priority.priorityID = capex.priorityID", "inner")
+            ->join("capexStatus", "capexStatus.capexStatusID = capex.capexStatusID", "inner")
+            ->where($arr)
+            ->get();
         $result = $query->result();
         return $result;
     }
- 
+
+    public function getCapexApproval($arr)
+    {
+        $query = $this->db->select("*")
+            ->from("capex")
+            ->join("classification", "classification.classificationID = capex.classificationID", "inner")
+            ->join("priority", "priority.priorityID = capex.priorityID", "inner")
+            ->join("capexStatus", "capexStatus.capexStatusID = capex.capexStatusID", "inner")
+            ->join("capexFlowDetail", "capexFlowDetail.capexID = capex.capexID", "inner")
+            ->join("capexFlow", "capexFlow.capexFlowID = capexFlowDetail.capexFlowID", "inner")
+            ->where($arr)
+            ->get();
+        $result = $query->result();
+        return $result;
+    }
+
     public function insertCapex($arr)
     {
-        $this->db->insert('capex',$arr);
+        $this->db->insert('capex', $arr);
         return $this->db->insert_id();
     }
-    public function updateCapex($arr,$where)
+    public function updateCapex($arr, $where)
     {
         $this->db->set($arr);
         $this->db->where($where);
@@ -33,6 +54,28 @@ class CapexModel extends CI_Controller
         $this->db->delete('capex');
     }
 
+    public function getInfo($where)
+    {
+        $query = $this->db->select("COUNT(capexStatus.capexStatusName) AS c,capexStatus.capexStatusName")
+            ->from("capex")
+            ->join("capexStatus", "capexStatus.capexStatusID = capex.capexStatusID", "inner")
+            ->where($where)
+            ->group_by('capexStatus.capexStatusName')
+            ->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function getCapexCount($where)
+    {
+        $query = $this->db->select("SUM(capex.totalPlan) AS total,capex.division")
+            ->from("capex")
+            ->where($where)
+            ->group_by('capex.division')
+            ->get();
+        $result = $query->result();
+        return $result;
+    }
 }
  // public function getCapex1()
     // {
